@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+env/
+venv/
+.env
+*.egg-info/
+dist/
+build/
+
+# ML models
+*.pkl
+*.h5
+*.joblib
+
+# Frontend
+node_modules/
+dist/
+build/
+*.log
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
