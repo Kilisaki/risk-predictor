@@ -47,3 +47,82 @@ docker network create ml-back
 docker network create front-back
 
 ```
+
+
+# idef0:
+## A-0
+![A-0](<idef0-A-0 Контекстная диаграмма.drawio.png>)
+
+## A0
+![A0](<idef0-A0 Декомпозиция.drawio.png>)
+
+## A3
+![A3](<idef0-A3 Декомпозиция.drawio.png>)
+
+
+# Project tree
+```
+risk-predictor
+├─ .$idef0.xml.bkp
+├─ LICENSE
+├─ README.md
+├─ backend
+│  ├─ api
+│  │  ├─ dependencies
+│  │  │  ├─ __init__.py
+│  │  │  └─ auth.py
+│  │  └─ routes
+│  │     ├─ __init__.py
+│  │     ├─ health.py
+│  │     └─ predict.py
+│  ├─ db
+│  │  ├─ __init__.py
+│  │  ├─ models.py
+│  │  └─ session.py
+│  ├─ main.py
+│  ├─ ml
+│  │  ├─ __init__.py
+│  │  ├─ predict.py
+│  │  └─ train.py
+│  ├─ models
+│  │  ├─ __init__.py
+│  │  └─ schemas.py
+│  └─ services
+│     ├─ __init__.py
+│     └─ risk_predictor.py
+├─ docker-compose.yml
+├─ frontend
+│  ├─ README.md
+│  ├─ eslint.config.js
+│  ├─ index.html
+│  ├─ package-lock.json
+│  ├─ package.json
+│  ├─ public
+│  │  └─ vite.svg
+│  ├─ src
+│  │  ├─ App.css
+│  │  ├─ App.tsx
+│  │  ├─ assets
+│  │  │  └─ react.svg
+│  │  ├─ index.css
+│  │  └─ main.tsx
+│  ├─ tsconfig.app.json
+│  ├─ tsconfig.json
+│  ├─ tsconfig.node.json
+│  └─ vite.config.ts
+├─ idef0-A-0 Контекстная диаграмма.drawio.png
+├─ idef0-A0 Декомпозиция.drawio.png
+├─ idef0-A3 Декомпозиция.drawio.png
+├─ idef0.xml
+├─ infrastructure
+│  ├─ docker
+│  │  ├─ backend.Dockerfile
+│  │  ├─ database.Dockerfile
+│  │  └─ frontend.Dockerfile
+│  ├─ nginx
+│  │  └─ nginx.conf
+│  └─ terraform
+├─ requirements.txt
+└─ Не подтверждено 378621.~
+
+```
