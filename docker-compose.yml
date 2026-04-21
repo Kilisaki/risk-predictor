@@ -39,6 +39,9 @@ services:
       ENVIRONMENT: production
     volumes:
       - ./backend:/app/backend
+      # Добавляем Alembic файлы в volumes для разработки
+      - ./alembic:/app/alembic
+      - ./alembic.ini:/app/alembic.ini
     ports:
       - "8000:8000"
     depends_on:
@@ -53,9 +56,14 @@ services:
     networks:
       - risk-predictor-network
     restart: unless-stopped
+    #ЗАМЕНЯЕМ КОМАНДУ
     command: >
       sh -c "
-      python -c 'from backend.db.models import Base; from backend.db.session import engine; Base.metadata.create_all(bind=engine)' &&
+      echo 'Waiting for database to be fully ready...' &&
+      sleep 5 &&
+      echo 'Running Alembic migrations...' &&
+      alembic upgrade head &&
+      echo 'Starting FastAPI application...' &&
       python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --workers 4
       "
   ml-service:

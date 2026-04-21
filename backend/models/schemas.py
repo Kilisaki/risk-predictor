@@ -73,10 +73,9 @@ class OperationInfo(BaseModel):
 
 
 class PredictRequest(BaseModel):
-    operation_id: int
     features: Dict[str, Any]
     model_version: Optional[str] = None
-
+    operation_id: Optional[int] = None
 class PredictResponse(BaseModel):
     """Risk prediction response."""
     prediction_id: int

@@ -54,7 +54,7 @@ class Prediction(Base):
     __tablename__ = "predictions"
 
     id = Column(Integer, primary_key=True, index=True)
-    operation_id = Column(Integer, ForeignKey("operations.id"), nullable=False)
+    operation_id = Column(Integer, ForeignKey("operations.id"), nullable=True) 
     risk_score = Column(Float, nullable=False)
     risk_level = Column(String, nullable=False)
     model_version = Column(String, nullable=False)

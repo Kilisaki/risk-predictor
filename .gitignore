@@ -1,17 +1,28 @@
 # Python
 __pycache__/
 *.py[cod]
+*.pyo
+*.pyd
 *.so
 .Python
-env/
+
+# Virtual environments
 venv/
-.env*
+env/
+.venv/
+env.bak/
+venv.bak/
+
+# Environment files (КРИТИЧНО!)
+.env
+.env.*
+!.env.example
+!.env.test
+
+# Distribution / packaging
 *.egg-info/
 dist/
 build/
-
-#IGNORED FILES 
-*.ignore
 
 # ML models
 *.pkl
@@ -20,13 +31,33 @@ build/
 
 # Frontend
 node_modules/
-dist/
-build/
+
+# Logs
 *.log
+alembic.log
+
+# OS
 .DS_Store
+Thumbs.db
 
 # IDE
 .vscode/
 .idea/
 *.swp
-.venv
+*.swo
+*~
+
+# Alembic specific
+alembic/__pycache__/
+alembic/versions/__pycache__/
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Docker
+*.dockerignore
+
+# IGNORED FILES 
+*.ignore

@@ -40,6 +40,21 @@ COPY --from=builder /usr/local/bin /usr/local/bin
 # Copy application code
 COPY . .
 
+
+# Копируем alembic.ini и папку с миграциями 
+COPY alembic.ini .
+COPY alembic/ ./alembic/
+
+# Создаем скрипт для запуска с миграциями
+RUN echo '#!/bin/bash\n\
+set -e\n\
+echo "Running Alembic migrations..."\n\
+alembic upgrade head\n\
+echo "Starting FastAPI application..."\n\
+exec uvicorn backend.main:app --host 0.0.0.0 --port 8000 --workers 4\n\
+' > /app/entrypoint.sh && chmod +x /app/entrypoint.sh
+
+
 # Create non-root user
 RUN useradd -m -u 1000 appuser && \
     chown -R appuser:appuser /app
@@ -52,5 +67,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 # Expose port
 EXPOSE 8000
 
-# Run FastAPI application
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
+# Run FastAPI application with migrations
+CMD ["/app/entrypoint.sh"]
