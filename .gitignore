@@ -17,17 +17,13 @@ venv.bak/
 .env
 .env.*
 !.env.example
+!.env.docker.example
 !.env.test
 
 # Distribution / packaging
 *.egg-info/
 dist/
 build/
-
-# ML models
-*.pkl
-*.h5
-*.joblib
 
 # Frontend
 node_modules/
