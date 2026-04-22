@@ -12,7 +12,7 @@ from backend.models.schemas import PredictRequest, PredictionResponse
 
 router = APIRouter(prefix="/predictions", tags=["predictions"])
 
-ML_SERVICE_URL = os.getenv("ML_SERVICE_URL", "http://localhost:8007")
+ML_SERVICE_URL = os.getenv("ML_SERVICE_URL", "http://localhost:8001")
 
 async_predictions: Dict[str, Dict[str, Any]] = {}
 

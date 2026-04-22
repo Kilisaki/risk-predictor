@@ -64,9 +64,16 @@ docker network create front-back
 ```
 risk-predictor
 ├─ .$idef0.xml.bkp
-├─ .dockerignore
 ├─ DOCKER_GUIDE.md
 ├─ README.md
+├─ alembic
+│  ├─ README
+│  ├─ env.py
+│  ├─ script.py.mako
+│  └─ versions
+│     ├─ 759764205143_initial_schema_snapshot.py
+│     └─ d74ee7ac2e29_make_operation_id_nullable.py
+├─ alembic.ini
 ├─ backend
 │  ├─ __init__.py
 │  ├─ api
@@ -94,6 +101,7 @@ risk-predictor
 │     ├─ patient_service.py
 │     └─ prediction_service.py
 ├─ docker-compose.yml
+├─ frontend
 ├─ idef0-A-0 Контекстная диаграмма.drawio.png
 ├─ idef0-A0 Декомпозиция.drawio.png
 ├─ idef0-A3 Декомпозиция.drawio.png
