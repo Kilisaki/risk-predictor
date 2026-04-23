@@ -3,9 +3,8 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Установка зависимостей
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements/ml.txt ./requirements.txt
+RUN pip install -r requirements.txt
 
 # Копируем код ml_service
 COPY ml_service/ ./ml_service/
