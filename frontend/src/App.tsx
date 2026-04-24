@@ -95,7 +95,7 @@ function AppInner() {
     },
   });
 
-  // ── Task Polling ─────────────────────────────────────────────────────────
+  // ── Task Polling ───────────────────────────────────
 
   useTaskPoller({
     taskId: pendingTaskId,
