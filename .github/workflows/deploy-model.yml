@@ -74,5 +74,3 @@ jobs:
             cd ${{ secrets.VPS_PROJECT_PATH }}
             docker compose build risk-ml
             docker compose up -d --no-deps risk-ml
-            sleep 5
-            docker compose exec -T risk-ml python -c "from ml_service.models.registry import registry; registry.clear(); registry.load_all(); print('✅ ML Service reloaded')"
