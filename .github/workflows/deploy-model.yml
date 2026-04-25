@@ -49,6 +49,8 @@ jobs:
           git add ml_service/model_versions/
           git diff --staged --quiet || git commit -m "🤖 Auto-version models [skip ci]"
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Copy to VPS
         uses: appleboy/scp-action@v0.1.7
