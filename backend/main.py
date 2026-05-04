@@ -13,7 +13,7 @@ load_dotenv()
 # Create database tables
 Base.metadata.create_all(bind=engine)
 
-# Initialize FastAPI app
+# 2Initialize FastAPI app
 app = FastAPI(
     title="Risk Predictor API",
     description="API for cardiovascular risk prediction",
