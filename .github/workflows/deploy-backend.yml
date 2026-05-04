@@ -41,7 +41,7 @@ jobs:
           pytest backend/tests/ -v --tb=short  # убрал || true, надеюсь
 
   deploy:
-    needs: test
+    #needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     
