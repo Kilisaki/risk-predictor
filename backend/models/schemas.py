@@ -1,14 +1,33 @@
 """Pydantic schemas for request/response validation."""
+from fastapi import Query
 from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime, date
 from typing import Optional, List, Dict, Any
 
 
+# =====================
 # Patient Schemas
+# =====================
+
 class PatientCreate(BaseModel):
     """Patient creation request."""
-    sex: str
+    sex: str = Field(..., pattern="^(male|female|other)$")
     birth_date: date
+
+
+class PatientUpdate(BaseModel):
+    """Patient update request."""
+    sex: Optional[str] = Field(None, pattern="^(male|female|other)$")
+    birth_date: Optional[date] = None
+
+
+class PatientFilter(BaseModel):
+    """Patient listing filters."""
+    sex: Optional[str] = Query(None)
+    age_min: Optional[int] = Query(None, ge=0, le=150)
+    age_max: Optional[int] = Query(None, ge=0, le=150)
+    has_operations: Optional[bool] = Query(None)
+    search: Optional[str] = Query(None, description="Search by ID or text")
 
 
 class PatientResponse(BaseModel):
@@ -17,16 +36,63 @@ class PatientResponse(BaseModel):
     sex: str
     birth_date: date
     created_at: datetime
+    age: Optional[int] = None  # Computed field
 
     model_config = ConfigDict(from_attributes=True)
 
 
+class PatientWithOperations(PatientResponse):
+    """Patient with operations."""
+    operations: List["OperationSummary"]
+    total_operations: int
+    last_operation_date: Optional[date] = None
+
+
+class PatientOperationStats(BaseModel):
+    """Patient operation statistics."""
+    patient_id: int
+    total_operations: int
+    operation_types: Dict[str, int]
+    operations_with_predictions: int
+    operations_without_predictions: int
+    avg_risk_score: Optional[float] = None
+    risk_level_distribution: Dict[str, int]
+    first_operation_date: Optional[date] = None
+    last_operation_date: Optional[date] = None
+    days_since_last_operation: Optional[int] = None
+
+
+class AgeDistribution(BaseModel):
+    """Age distribution statistics."""
+    ranges: Dict[str, int]
+    total_patients: int
+    average_age: float
+
+
+# =====================
 # Operation Schemas
+# =====================
+
 class OperationCreate(BaseModel):
     """Operation creation request."""
     patient_id: int
     type: str
     date: date
+
+
+class OperationUpdate(BaseModel):
+    """Operation update request."""
+    type: Optional[str] = None
+    date: Optional[date] = None
+
+
+class OperationFilter(BaseModel):
+    """Operation listing filters."""
+    patient_id: Optional[int] = Query(None)
+    type: Optional[str] = Query(None)
+    date_from: Optional[date] = Query(None)
+    date_to: Optional[date] = Query(None)
+    has_predictions: Optional[bool] = Query(None)
 
 
 class OperationResponse(BaseModel):
@@ -40,7 +106,43 @@ class OperationResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class OperationSummary(BaseModel):
+    """Operation summary for nested responses."""
+    id: int
+    type: str
+    date: date
+    has_clinical_data: bool = False
+    has_prediction: bool = False
+    prediction_count: int = 0
+    latest_risk_score: Optional[float] = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ClinicalDataResponse(BaseModel):
+    """Clinical data response."""
+    id: int
+    operation_id: int
+    features: Dict[str, Any]
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class OperationWithClinicalData(OperationResponse):
+    """Operation with clinical data."""
+    clinical_data: ClinicalDataResponse
+
+
+class OperationWithPrediction(OperationResponse):
+    """Operation with predictions."""
+    predictions: List["PredictionResponse"]
+
+
+# =====================
 # Prediction Schemas
+# =====================
+
 class PredictionResponse(BaseModel):
     """Prediction response."""
     id: int
@@ -53,12 +155,16 @@ class PredictionResponse(BaseModel):
 
     model_config = ConfigDict(populate_by_name=True, from_attributes=True)
 
+
 class PredictionDetailResponse(PredictionResponse):
     """Detailed prediction response with features."""
     features: Optional[Dict[str, Any]] = None
 
 
+# =====================
 # Predict Request/Response
+# =====================
+
 class PatientInfo(BaseModel):
     """Patient info in predict request."""
     id: Optional[int] = None
@@ -73,9 +179,12 @@ class OperationInfo(BaseModel):
 
 
 class PredictRequest(BaseModel):
+    """Prediction request."""
     features: Dict[str, Any]
     model_version: Optional[str] = None
     operation_id: Optional[int] = None
+
+
 class PredictResponse(BaseModel):
     """Risk prediction response."""
     prediction_id: int
@@ -84,10 +193,13 @@ class PredictResponse(BaseModel):
     model_version: str
     created_at: datetime
 
-    model_config = ConfigDict(populate_by_name=True, from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
-# Model Info Response
+# =====================
+# Model Info Schemas
+# =====================
+
 class ModelVersionInfo(BaseModel):
     """Info about specific model version."""
     is_current: bool
@@ -103,7 +215,6 @@ class ModelVersionResponse(BaseModel):
     current_version: str
     versions: Dict[str, ModelVersionInfo]
 
-# В backend/models/schemas.py
 
 class ModelInfoResponse(BaseModel):
     """Response schema for model information from ML service."""
@@ -117,15 +228,32 @@ class ModelInfoResponse(BaseModel):
     loaded_at: Optional[str] = None
     file_path: Optional[str] = None
 
+
 class SetVersionResponse(BaseModel):
     """Response when setting current model version."""
     version: str
     required_features: List[str]
-# Health Check Response
+
+
+# =====================
+# Health Check
+# =====================
+
 class HealthCheckResponse(BaseModel):
     """Health check response."""
-    service: str = Field(..., alias="model_service")
-
-    model_config = ConfigDict(populate_by_name=True)
+    status: str
     database: str
-    model_service: str
+    ml_service: str = Field(alias="model_service")
+    
+    model_config = ConfigDict(
+        populate_by_name=True,
+        protected_namespaces=()
+    )
+
+
+# =====================
+# Update forward references
+# =====================
+
+PatientWithOperations.model_rebuild()
+OperationWithPrediction.model_rebuild()

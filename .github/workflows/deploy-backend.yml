@@ -21,6 +21,14 @@ jobs:
         with:
           python-version: '3.12'
       
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements/backend.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      
       - name: Install dependencies
         run: |
           pip install -r requirements/backend.txt
@@ -30,7 +38,7 @@ jobs:
         env:
           DATABASE_URL: sqlite:///./test.db
         run: |
-          pytest backend/tests/ -v --tb=short || true
+          pytest backend/tests/ -v --tb=short  # убрал || true, надеюсь
 
   deploy:
     needs: test
