@@ -8,15 +8,21 @@ RUN npm ci
 
 # Копируем всё остальное содержимое frontend
 COPY frontend/ ./
-# VITE_API_URL берется из окружения при сборке
+
+# Для production API на том же домене, просто /api
+# Vite будет использовать это как базовый URL для API запросов
 ARG VITE_API_URL=/api
 ENV VITE_API_URL=$VITE_API_URL
+
+# Или можно добавить VITE_API_BASE_URL для axios/fetch
+ARG VITE_API_BASE_URL=/api
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 
 RUN npm run build
 
 # Production stage
 FROM nginx:alpine
-# В Vite результат обычно в dist, а не в build
+# В Vite результат обычно в dist
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY infrastructure/nginx/default.conf /etc/nginx/conf.d/default.conf
 
